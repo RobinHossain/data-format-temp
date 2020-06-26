@@ -30,11 +30,11 @@ final class App
         }
     }
 
-    public function setTransaction($transaction){
+    private function setTransaction($transaction){
         $this->transaction = json_decode($transaction);
     }
 
-    public function binResult(){
+    private function binResult(){
         $binResults = file_get_contents('https://lookup.binlist.net/' .$this->transaction->bin);
         if ($binResults && !empty($binResults)){
             $binResults = json_decode($binResults);
@@ -49,13 +49,13 @@ final class App
         }
     }
 
-    public function getRate($binResults){
+    private function getRate($binResults){
         $rate = @json_decode(file_get_contents('https://api.exchangeratesapi.io/latest'), true)['rates'][$this->transaction->currency];
         $this->rate = floatval($rate);
         return $this->fixAmount($binResults);
     }
 
-    public function fixAmount($binResults){
+    private function fixAmount($binResults){
         $amount = $this->transaction->amount;
         if( $this->rate > 0 || $this->transaction->currency != 'EUR' ){
             $amount = $amount / $this->rate;
@@ -75,7 +75,7 @@ final class App
         return in_array($cc, $euCountryCodes);
     }
 
-    public function getAmount(){
+    private function getAmount(){
         return $this->amount;
     }
 
